@@ -7,8 +7,9 @@ set -e
 : "${BIN_CPIO:=$(type -P gnucpio || type -P cpio)}"
 
 # get parameters
-SSH_PUBLIC_KEY_FILE=${1:-"$HOME/.ssh/id_rsa.pub"}
-TARGET_ISO=${2:-"`pwd`/ubuntu-20.04-netboot-amd64-unattended.iso"}
+# Argument $1 is a full path to the custom preseed.
+SSH_PUBLIC_KEY_FILE=${2:-"$HOME/.ssh/id_rsa.pub"}
+TARGET_ISO=${3:-"`pwd`/ubuntu-20.04-netboot-amd64-unattended.iso"}
 
 # check if ssh key exists
 if [ ! -f "$SSH_PUBLIC_KEY_FILE" ];
@@ -24,6 +25,9 @@ TMP_DOWNLOAD_DIR="`mktemp -d`"
 TMP_DISC_DIR="`mktemp -d`"
 TMP_INITRD_DIR="`mktemp -d`"
 
+# get custom preseed
+CUSTOM_PRESEED=${1:-"$SCRIPT_DIR/custom/preseed.cfg"}
+
 # download and extract netboot iso
 SOURCE_ISO_URL="http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/mini.iso"
 cd "$TMP_DOWNLOAD_DIR"
@@ -38,7 +42,7 @@ patch -p1 -i "$SCRIPT_DIR/custom/boot-menu.patch"
 # prepare assets
 cd "$TMP_INITRD_DIR"
 mkdir "./custom"
-cp "$SCRIPT_DIR/custom/preseed.cfg" "./preseed.cfg"
+cp "$CUSTOM_PRESEED" "./preseed.cfg"
 cp "$SSH_PUBLIC_KEY_FILE" "./custom/userkey.pub"
 cp "$SCRIPT_DIR/custom/ssh-host-keygen.service" "./custom/ssh-host-keygen.service"
 
