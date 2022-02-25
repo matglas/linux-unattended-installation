@@ -31,7 +31,7 @@ CUSTOM_PRESEED=${1:-"$SCRIPT_DIR/custom/preseed.cfg"}
 # download and extract netboot iso
 SOURCE_ISO_URL="http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/mini.iso"
 cd "$TMP_DOWNLOAD_DIR"
-wget -4 "$SOURCE_ISO_URL" -O "./netboot.iso"
+wget -q -4 "$SOURCE_ISO_URL" -O "./netboot.iso"
 "$BIN_7Z" x "./netboot.iso" "-o$TMP_DISC_DIR"
 
 # patch boot menu
